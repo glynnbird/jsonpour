@@ -3,6 +3,9 @@
 
 const Parser = require('./parser.js')
 const nodestream = require('stream')
+const stringify = require('./stringify.js')
+
+exports.stringify = stringify
 
 exports.parse = function (path, map) {
   const parser = new Parser()
