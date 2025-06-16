@@ -16,9 +16,10 @@ npm install --save jsonpour
 Listen for the `data` event:
 
 ```js
-const fs = require('rs')
+import { createReadStream  } from 'node:fs'
+import * as jsonpour from 'jsonpour'
 
-const rs = fs.createReadStream('./test.json')
+const rs = createReadStream('./test.json')
 // parse an incoming JSON doc looking for a results:[] array containing a 'doc' sub-object
 rs.pipe(jsonpour.parse('results.*.doc')).on('data', function(obj) {
   console.log('Found a doc', obj)
@@ -30,19 +31,19 @@ rs.pipe(jsonpour.parse('results.*.doc')).on('data', function(obj) {
 Piping:
 
 ```js
-const jsonpour = require('jsonpour')
-const fs = require('fs')
+import { createReadStream  } from 'node:fs'
+import { Transform } from 'node:stream'
+import * as jsonpour from 'jsonpour'
 
 // streaming transform
-const stream = require('stream')
-const filter = new stream.Transform({ objectMode: true })
+const filter = new Transform({ objectMode: true })
 filter._transform = function (obj, encoding, done) {
   // stringify the object
   this.push(JSON.stringify(obj) + '\n')
   done()
 }
 
-const rs = fs.createReadStream('./test.json')
+const rs = createReadStream('./test.json')
 // stream every object from the results array via a filter to stdout
 rs.pipe(jsonpour.parse('results.*'))
   .pipe(filter)

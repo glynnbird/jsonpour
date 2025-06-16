@@ -1,15 +1,17 @@
+import test from 'node:test'
+import assert from 'node:assert/strict'
+import { readFileSync, createReadStream  } from 'node:fs'
+import * as jsonpour from '../index.js'
 
-const jsonpour = require('..')
-const fs = require('fs')
 const PATH = './tests/jsonl.jsonl'
-const contents = fs.readFileSync(PATH, 'utf8').split('\n')
+const contents = readFileSync(PATH, 'utf8').split('\n')
   .map((str) => { if (str.length > 0) { return JSON.parse(str)} else { return null}})
   .filter((obj) => { return obj !== null })
 
 test('should be able to stream through JSONL objects', async () => {
   return new Promise((resolve, reject) => {
     const results = []
-    const rs = fs.createReadStream(PATH)
+    const rs = createReadStream(PATH)
     rs
       .pipe(jsonpour.parse())
       .on('data', function(d) {
@@ -17,7 +19,7 @@ test('should be able to stream through JSONL objects', async () => {
       })
       .on('finish', function() {
         // console.log(results.length, contents.length)
-        expect(results).toEqual(contents)
+        assert.deepEqual(results, contents)
         resolve()
       })
       .on('error', reject)
@@ -27,7 +29,7 @@ test('should be able to stream through JSONL objects', async () => {
 test('should be able to stream through JSONL objects to get contents', async () => {
   return new Promise((resolve, reject) => {
     const results = []
-    const rs = fs.createReadStream(PATH)
+    const rs = createReadStream(PATH)
     const expected = contents.map((obj) => { return obj._id})
     rs
       .pipe(jsonpour.parse('._id'))
@@ -35,7 +37,7 @@ test('should be able to stream through JSONL objects to get contents', async () 
         results.push(d)
       })
       .on('finish', function() {
-        expect(results).toEqual(expected)
+        assert.deepEqual(results, expected)
         resolve()
       })
       .on('error', reject)

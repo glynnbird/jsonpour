@@ -1,13 +1,19 @@
 
-const jsonpour = require('..')
-const fs = require('fs')
+
+import test from 'node:test'
+import assert from 'node:assert/strict'
+import { readFileSync, createReadStream  } from 'node:fs'
+import * as jsonpour from '../index.js'
+
 const PATH = './tests/changes.txt'
-const contents = JSON.parse(fs.readFileSync(PATH, 'utf8'))
+const contents = JSON.parse(readFileSync(PATH, 'utf8'))
+
+
 
 test('should be able to extract the documents from a changes feed', async () => {
   return new Promise((resolve, reject) => {
     const results = []
-    const rs = fs.createReadStream(PATH)
+    const rs = createReadStream(PATH)
     rs
       .pipe(jsonpour.parse('results.*.doc'))
       .pipe(jsonpour.stringify)
@@ -15,7 +21,7 @@ test('should be able to extract the documents from a changes feed', async () => 
         results.push(str)
       })
       .on('finish', function() {
-        expect(results).toEqual(contents.results.map((c) => { return JSON.stringify(c.doc)+'\n' }))
+        assert.deepEqual(results, contents.results.map((c) => { return JSON.stringify(c.doc)+'\n' }))
         resolve()
       })
       .on('error', reject)

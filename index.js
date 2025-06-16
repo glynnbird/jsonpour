@@ -1,17 +1,20 @@
+import * as nodeStream from 'node:stream'
 
-// modernised version of https://www.npmjs.com/package/JSONStream
+import { Parser } from './parser.js'
 
-const Parser = require('./parser.js')
-const nodestream = require('stream')
-const stringify = require('./stringify.js')
+export const stringify = new nodeStream.Transform({ objectMode: true })
+stringify._transform = function (obj, encoding, done) {
+  // stringify the object
+  this.push(JSON.stringify(obj) + '\n')
+  done()
+}
 
-exports.stringify = stringify
 
-exports.parse = function (path, map) {
+export function parse (path, map) {
   const parser = new Parser()
 
   // create stream transformer
-  const stream = new nodestream.Transform({ objectMode: true })
+  const stream = new nodeStream.Transform({ objectMode: true })
 
   // add _transform function
   stream._transform = function (chunk, encoding, done) {

@@ -56,7 +56,7 @@ function alloc (size) {
   return Buffer.alloc(size)
 }
 
-function Parser () {
+export function Parser () {
   this.tState = START
   this.value = undefined
 
@@ -427,4 +427,3 @@ proto.numberReviver = function (text) {
 
 Parser.C = C
 
-module.exports = Parser

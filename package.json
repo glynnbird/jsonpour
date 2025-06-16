@@ -1,10 +1,11 @@
 {
   "name": "jsonpour",
-  "version": "1.0.2",
+  "version": "2.0.0",
+  "type": "module",
   "description": "A streaming JSON parser",
   "main": "index.js",
   "scripts": {
-    "test": "jest ./tests/*"
+    "test": "node --test ./tests/*.test.js"
   },
   "repository": {
     "type": "git",
@@ -18,13 +19,5 @@
   "bugs": {
     "url": "https://github.com/glynnbird/jsonpour/issues"
   },
-  "homepage": "https://github.com/glynnbird/jsonpour#readme",
-  "devDependencies": {
-    "jest": "^29.4.1"
-  },
-  "standard": {
-    "env": [
-      "jest"
-    ]
-  }
+  "homepage": "https://github.com/glynnbird/jsonpour#readme"
 }
